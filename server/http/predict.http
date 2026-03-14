@@ -1,0 +1,41 @@
+POST http://localhost:5000/api/crops/predict
+Content-Type: application/json
+
+{
+    "N": 90,
+    "P": 40,
+    "K": 60,
+    "temperature": 25,
+    "humidity": 60,
+    "ph": 6.5,
+    "rainfall": 120
+}
+
+###
+
+POST http://localhost:5000/api/crops/predict
+Content-Type: application/json
+
+{
+    "N": 90,
+    "P": 10,
+    "K": 90,
+    "temperature": 45,
+    "humidity": 90,
+    "ph": 9.5,
+    "rainfall": 190
+}
+
+###
+POST http://localhost:5000/api/crops/predict
+Content-Type: application/json
+
+{
+    "N": 10,
+    "P": 10,
+    "K": 20,
+    "temperature": 15,
+    "humidity": 20,
+    "ph": 5.5,
+    "rainfall": 10
+}
