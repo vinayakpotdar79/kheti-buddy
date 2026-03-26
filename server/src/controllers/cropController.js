@@ -48,3 +48,44 @@ export const getRecommendation = async (req, res) => {
     });
   }
 };
+
+export const getPricePrediction = async (req, res) => {
+  try {
+    const { state, district, year, crop } = req.body;
+
+    if (!state || !district || !year || !crop) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required parameters. Please provide state, district, year, and crop."
+      });
+    }
+
+    const response = await axios.post(`${FASTAPI_URL}/predict_price`, {
+      state,
+      district,
+      year,
+      crop
+    });
+
+    return res.status(200).json({
+      success: true,
+      predicted_price: response.data.price
+    });
+
+  } catch (error) {
+    console.error("Error getting price prediction:", error.message);
+
+    if (error.response) {
+      return res.status(error.response.status).json({
+        success: false,
+        message: "Error from Machine Learning service",
+        details: error.response.data
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error. Ensure the FastAPI ML service is running."
+    });
+  }
+};
