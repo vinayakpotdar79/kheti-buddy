@@ -1,0 +1,9 @@
+POST http://localhost:5000/api/crops/predict_price
+Content-Type: application/json
+
+{
+    "state": "Maharashtra",
+    "district": "Solapur",
+    "year": 2030,
+    "crop": "RICE HARVEST PRICE (Rs per Quintal)"
+}   
