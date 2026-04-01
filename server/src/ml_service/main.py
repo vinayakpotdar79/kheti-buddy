@@ -154,29 +154,23 @@ def predict_price(data: PriceInput):
         )
 
     try:
-        features = np.array([
-            [
-                data.state,
-                data.year,
-                data.district,
-                data.crop
-            ]
-        ])
-
+        state_enc = le_state.transform([data.state])[0]
+        dist_enc = le_dist.transform([data.district])[0]
+        crop_enc = le_crop.transform([data.crop])[0]
+        
         prediction = price_model.predict([
-            [data.year,
-            le_state.transform([data.state])[0],
-            le_dist.transform([data.district])[0],
-            le_crop.transform([data.crop])[0]]
+            [data.year, state_enc, dist_enc, crop_enc]
         ])
         price = prediction[0]
         print(f"Predicted price: {price}")
         return {
             "success": True,
-            "price": price
+            "price": float(price)
         }
 
     except Exception as e:
+        import traceback
+        print(f"Error in predict_price: {traceback.format_exc()}")
         raise HTTPException(
             status_code=400,
             detail=str(e)
