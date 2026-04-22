@@ -1,21 +1,20 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import CropRecommendation from './pages/CropRecommendation';
-import PricePrediction from './pages/PricePrediction';
+import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import './App.css';
+import CropRecommendationForm from './components/CropRecommendationForm';
+import PricePredictionForm from './components/PricePredictionForm';
 
 function App() {
   return (
-    <BrowserRouter>
-      <div className="app">
-        <Navbar />
+    <>
+      <Navbar />
+      <main className="main-content container">
         <Routes>
-          <Route path="/" element={<CropRecommendation />} />
-          <Route path="/predict" element={<CropRecommendation />} />
-          <Route path="/price" element={<PricePrediction />} />
+          <Route path="/" element={<CropRecommendationForm />} />
+          <Route path="/price" element={<PricePredictionForm />} />
+          <Route path="*" element={<h2 className="text-center text-7xl text-red-500">Page Not Found</h2>} />
         </Routes>
-      </div>
-    </BrowserRouter>
+      </main>
+    </>
   );
 }
 

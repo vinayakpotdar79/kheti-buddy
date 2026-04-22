@@ -1,19 +1,32 @@
-import { Link } from 'react-router-dom';
-import './Navbar.css';
+import { NavLink } from 'react-router-dom';
+import { Leaf } from 'lucide-react';
 
-function Navbar() {
+const Navbar = () => {
   return (
     <nav className="navbar">
-      <div className="nav-logo">
-        <span className="logo-icon">🌱</span>
-        <span className="logo-text">KhetiBuddy</span>
-      </div>
-      <div className="nav-links">
-        <Link to="/predict" className="nav-link">Crop Recommendation</Link>
-        <Link to="/price" className="nav-link">Price Prediction</Link>
+      <div className="container">
+        <div className="navbar-brand">
+          <Leaf className="text-primary" size={28} color="var(--primary)" />
+          <span>Kheti Buddy</span>
+        </div>
+        <div className="navbar-nav">
+          <NavLink
+            to="/"
+            className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
+            end
+          >
+            Recommendation
+          </NavLink>
+          <NavLink
+            to="/price"
+            className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
+          >
+            Price Predictor
+          </NavLink>
+        </div>
       </div>
     </nav>
   );
-}
+};
 
 export default Navbar;
