@@ -116,8 +116,11 @@ const CropRecommendationForm = () => {
   return (
     <div className="glass-panel app-card">
       <div className="card-header">
-        <h2>Smart Crop Recommendation</h2>
-        <p>Enter soil nutrients and environmental factors to get the best crop suggestions.</p>
+        <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-400/10 border border-emerald-400/20 rounded-full text-emerald-400 text-xs font-bold mb-4">
+          <FlaskConical size={14} /> ML ANALYSIS
+        </div>
+        <h2>Crop Recommendation</h2>
+        <p className="text-emerald-100/60">Enter soil nutrients and location for AI-powered crop suggestions</p>
       </div>
 
       <form onSubmit={handleSubmit}>
@@ -157,8 +160,8 @@ const CropRecommendationForm = () => {
             <div className="input-icon-wrapper">
               <MapPin size={18} className="input-icon" />
               <select name="state" value={formData.state} onChange={handleChange} className="form-control">
-                <option value="">Select State</option>
-                {STATES.map(st => <option key={st} value={st}>{st}</option>)}
+                <option value="" className='bg-emerald-700'>Select State</option>
+                {STATES.map(st => <option key={st} value={st} className='bg-emerald-950'>{st}</option>)}
               </select>
             </div>
           </div>
@@ -167,9 +170,9 @@ const CropRecommendationForm = () => {
             <div className="input-icon-wrapper">
               <MapPin size={18} className="input-icon" />
               <select name="city" value={formData.city} onChange={handleChange} disabled={!formData.state} className="form-control">
-                <option value="">Select City/District</option>
+                <option value="" className='bg-emerald-700'>Select City/District</option>
                 {formData.state && DISTRICT[formData.state]?.map(dist => (
-                  <option key={dist} value={dist}>{dist}</option>
+                  <option key={dist} value={dist} className='bg-emerald-950'>{dist}</option>
                 ))}
               </select>
             </div>
@@ -266,24 +269,38 @@ const CropRecommendationForm = () => {
           </div>
         ) : null}
 
-        <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '1rem', padding: '1rem', fontSize: '1.1rem' }} disabled={loading || weatherLoading}>
+        <button type="submit" className="btn btn-primary mt-4" disabled={loading || weatherLoading}>
           {loading ? (
             <Sprout className="spinner" size={24} />
           ) : (
             <>
-              <Sprout size={24} /> Recognize Best Crop
+              <Sprout size={24} /> Recommend Best Crop
             </>
           )}
         </button>
       </form>
 
       {result && (
-        <div className="result-card">
-          <h3>Highly Recommended</h3>
-          <div className="result-value">
-            {result}
+        <div className="prediction-result-premium animate-fade-in mt-12 rounded-3xl p-8 relative overflow-hidden">
+          {/* Decorative background elements */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
+
+          <div className="flex flex-col items-center text-center relative z-10">
+            <div className="premium-badge mb-6">Prediction Success</div>
+            <div className="prediction-icon-wrapper mb-6 scale-110">
+              <Sprout size={56} className="prediction-icon" />
+            </div>
+            <div className="prediction-text">
+              <span className="prediction-label text-emerald-200">Recommended for your land</span>
+              <h2 className="prediction-value text-white text-5xl md:text-6xl">{result}</h2>
+            </div>
+            <div className="prediction-footer mt-8 pt-6 border-t border-white/20 w-full max-w-md">
+              <p className="text-emerald-50 opacity-90">
+                This crop is perfectly suited for your soil's NPK levels ({formData.N}, {formData.P}, {formData.K})
+                and the current weather in {formData.city}.
+              </p>
+            </div>
           </div>
-          <p style={{ color: 'var(--text-muted)' }}>This crop fits perfectly given the environmental inputs provided.</p>
         </div>
       )}
     </div>

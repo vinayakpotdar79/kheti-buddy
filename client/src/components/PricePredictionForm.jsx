@@ -32,6 +32,12 @@ const PricePredictionForm = () => {
     const cropStr = formData.crop ? formData.crop.trim() : '';
 
     // Basic validation
+    if(formData.year< new Date().getFullYear()){
+      setError('Please enter a current or future year.');
+      setLoading(false);
+      return;
+    }
+  
     if (!stateStr || !districtStr || !yearStr || !cropStr) {
       setError('Please fill in all the details correctly.');
       setLoading(false);
@@ -68,13 +74,16 @@ const PricePredictionForm = () => {
   return (
     <div className="glass-panel app-card">
       <div className="card-header">
-        <h2>Market Price Prediction</h2>
-        <p>Estimate the expected price of a crop based on historical data and region.</p>
+        <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-400/10 border border-emerald-400/20 rounded-full text-emerald-400 text-xs font-bold mb-4">
+          <IndianRupee size={14} /> MARKET TRENDS
+        </div>
+        <h2>Price Predictor</h2>
+        <p className="text-emerald-100/60">Estimate the expected price of a crop based on historical data and region.</p>
       </div>
 
       <form onSubmit={handleSubmit}>
         {error && (
-          <div className="bg-red-50 border border-red-500 p-4 text-red-500 mb-6 rounded-lg">
+          <div className="error-message">
             {error}
           </div>
         )}
@@ -82,22 +91,22 @@ const PricePredictionForm = () => {
         <div className="form-row">
           <div className="form-group">
             <label>State Name</label>
-            <div className="relative">
-              <MapPin size={18} className="absolute top-3 left-3 text-gray-400" />
-              <select name="state" value={formData.state} onChange={handleChange} className="form-control pl-10 w-full appearance-none cursor-pointer">
-                <option value="">Select State</option>
-                {STATES.map(state => <option key={state} value={state}>{state}</option>)}
+            <div className="input-icon-wrapper">
+              <MapPin size={18} className="input-icon" />
+              <select name="state" value={formData.state} onChange={handleChange} className="form-control appearance-none cursor-pointer">
+                <option value="" className='bg-emerald-700'>Select State</option>
+                {STATES.map(state => <option key={state} value={state} className='bg-emerald-950'>{state}</option>)}
               </select>
             </div>
           </div>
           <div className="form-group">
             <label>District Name</label>
-            <div className="relative">
-              <MapPin size={18} className="absolute top-3 left-3 text-gray-400" />
-              <select name="district" value={formData.district} onChange={handleChange} disabled={!formData.state} className="form-control pl-10 w-full appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" style={{ backgroundColor: formData.state ? 'var(--surface-solid)' : 'var(--background)' }}>
-                <option value="">Select District</option>
+            <div className="input-icon-wrapper">
+              <MapPin size={18} className="input-icon" />
+              <select name="district" value={formData.district} onChange={handleChange} disabled={!formData.state} className="form-control appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+                <option value="" className='bg-emerald-700'>Select District</option>
                 {formData.state && DISTRICT[formData.state]?.map(district => (
-                  <option key={district} value={district}>{district}</option>
+                  <option key={district} value={district} className='bg-emerald-950'>{district}</option>
                 ))}
               </select>
             </div>
@@ -107,18 +116,18 @@ const PricePredictionForm = () => {
         <div className="form-row">
           <div className="form-group">
             <label>Current/Future Year</label>
-            <div className="relative">
-              <Calendar size={18} className="absolute top-3 left-3 text-gray-400" />
-              <input type="number" name="year" value={formData.year} onChange={handleChange} className="form-control pl-10 w-full" placeholder="e.g. 2026" />
+            <div className="input-icon-wrapper">
+              <Calendar size={18} className="input-icon" />
+              <input type="number" name="year" value={formData.year} onChange={handleChange} className="form-control" placeholder="e.g. 2026" />
             </div>
           </div>
           <div className="form-group">
             <label>Crop Name</label>
-            <div className="relative">
-              <Sprout size={18} className="absolute top-3 left-3 text-gray-400" />
-              <select name="crop" value={formData.crop} onChange={handleChange} className="form-control pl-10 w-full appearance-none cursor-pointer">
-                <option value="">Select Crop</option>
-                {CROPS.map(op => <option key={op.value} value={op.value}>{op.label}</option>)}
+            <div className="input-icon-wrapper">
+              <Sprout size={18} className="input-icon" />
+              <select name="crop" value={formData.crop} onChange={handleChange} className="form-control appearance-none cursor-pointer">
+                <option value="" className='bg-emerald-700'>Select Crop</option>
+                {CROPS.map(op => <option key={op.value} value={op.value} className='bg-emerald-950'>{op.label}</option>)}
               </select>
             </div>
           </div>
@@ -136,12 +145,24 @@ const PricePredictionForm = () => {
       </form>
 
       {result && (
-        <div className="result-card">
-          <h3>Expected Price</h3>
-          <div className="result-value">
-            ₹{parseFloat(result).toFixed(2)}
+        <div className="prediction-result-premium animate-fade-in mt-12 rounded-3xl p-8 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
+          
+          <div className="flex flex-col items-center text-center relative z-10">
+            <div className="premium-badge mb-6">Market Analysis Ready</div>
+            <div className="prediction-icon-wrapper mb-6 scale-110">
+              <IndianRupee size={56} className="prediction-icon" />
+            </div>
+            <div className="prediction-text">
+              <span className="prediction-label text-emerald-200">Expected Market Price</span>
+              <h2 className="prediction-value text-white text-5xl md:text-6xl">₹{parseFloat(result).toFixed(2)}</h2>
+            </div>
+            <div className="prediction-footer mt-8 pt-6 border-t border-white/20 w-full max-w-md">
+              <p className="text-emerald-50 opacity-90">
+                Estimated market value per quintal for <strong>{formData.crop}</strong> in {formData.district}, {formData.state} for the year {formData.year}.
+              </p>
+            </div>
           </div>
-          <p className="text-gray-500">Estimated market value per quintal.</p>
         </div>
       )}
     </div>
