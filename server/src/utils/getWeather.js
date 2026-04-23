@@ -6,10 +6,13 @@ const BASE_URL = "https://api.openweathermap.org/data/2.5/weather";
 
 export const getWeather = async (city) => {
     try {
-        // console.log(API_KEY)
         const response = await axios.get(`${BASE_URL}?q=${city}&appid=${API_KEY}&units=metric`);
-        console.log(response.data);
-        return response.data;
+        const weather = response.data;
+        const rainfall = weather.rain?.["1h"] ?? weather.rain?.["3h"] ?? 0;
+        return {
+            ...weather,
+            rainfall,
+        };
     } catch (error) {
         console.error("Error fetching weather:", error.message);
         return null;
