@@ -42,3 +42,16 @@ export const fetchWeather = async (city) => {
     throw new Error('Network error or weather service is down');
   }
 };
+
+// Get fertilizer recommendation
+export const getFertilizerRecommendation = async (data) => {
+  try {
+    const response = await api.post('/fertilizer/recommend', data);
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw new Error(error.response.data.error || 'Error getting recommendation');
+    }
+    throw new Error('Network error or server is down');
+  }
+};

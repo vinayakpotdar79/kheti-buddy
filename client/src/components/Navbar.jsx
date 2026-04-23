@@ -23,6 +23,12 @@ const Navbar = () => {
           >
             Price Predictor
           </NavLink>
+           <NavLink
+            to="/fertilizer"
+            className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
+          >
+            Fertilizer
+          </NavLink>
         </div>
       </div>
     </nav>
