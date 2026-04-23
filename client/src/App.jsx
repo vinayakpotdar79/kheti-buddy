@@ -2,6 +2,8 @@ import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import CropRecommendationForm from './components/CropRecommendationForm';
 import PricePredictionForm from './components/PricePredictionForm';
+import FertilizerForm from './components/FertilizerForm';
+
 
 function App() {
   return (
@@ -11,6 +13,7 @@ function App() {
         <Routes>
           <Route path="/" element={<CropRecommendationForm />} />
           <Route path="/price" element={<PricePredictionForm />} />
+          <Route path="/fertilizer" element={<FertilizerForm />} />
           <Route path="*" element={<h2 className="text-center text-7xl text-red-500">Page Not Found</h2>} />
         </Routes>
       </main>
