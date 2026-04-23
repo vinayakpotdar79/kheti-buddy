@@ -1,25 +1,32 @@
 import axios from "axios";
 import { getWeather } from "../utils/getWeather.js";
+import { analyzeSoilReportImage } from "../utils/getDocumentData.js";
 const FASTAPI_URL = process.env.FASTAPI_URL || "http://127.0.0.1:8000";
 
 export const getRecommendation = async (req, res) => {
   try {
-    const { N, P, K, ph, rainfall, city } = req.body;
+    const { N, P, K, ph, city } = req.body;
     if (!city) return res.status(400).json({
       success: false,
       message: "Missing required parameters. Please provide city."
     });
+
     const weatherData = await getWeather(city);
+    if (!weatherData) {
+      return res.status(502).json({
+        success: false,
+        message: "Unable to fetch weather data for the provided city."
+      });
+    }
+
     const temperature = weatherData.main.temp;
     const humidity = weatherData.main.humidity;
-    if (
-      N === undefined || P === undefined || K === undefined ||
-      temperature === undefined || humidity === undefined ||
-      ph === undefined || rainfall === undefined
-    ) {
+    const rainfall = weatherData.rainfall;
+
+    if (N === undefined || P === undefined || K === undefined || ph === undefined) {
       return res.status(400).json({
         success: false,
-        message: "Missing required parameters. Please provide N, P, K, temperature, humidity, ph, and rainfall."
+        message: "Missing required parameters. Please provide N, P, K, ph, and city."
       });
     }
 
@@ -35,7 +42,10 @@ export const getRecommendation = async (req, res) => {
     console.log(response.data);
     return res.status(200).json({
       success: true,
-      recommended_crop: response.data.crop
+      recommended_crop: response.data.crop,
+      rainfall,
+      temperature,
+      humidity
     });
 
   } catch (error) {
@@ -52,6 +62,57 @@ export const getRecommendation = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Internal server error. Ensure the FastAPI ML service is running."
+    });
+  }
+};
+
+export const extractSoilReport = async (req, res) => {
+  try {
+    const { imageUrl, imageBase64, city } = req.body;
+
+    if (!city) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required parameters. Please provide city."
+      });
+    }
+
+    if (!imageUrl && !imageBase64) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required parameters. Please provide imageUrl or imageBase64."
+      });
+    }
+
+    const weatherData = await getWeather(city);
+    if (!weatherData) {
+      return res.status(502).json({
+        success: false,
+        message: "Unable to fetch weather data for the provided city."
+      });
+    }
+
+    const soilValues = await analyzeSoilReportImage({ imageUrl, imageBase64 });
+    const { N, P, K, ph, rawText } = soilValues;
+
+    return res.status(200).json({
+      success: true,
+      N,
+      P,
+      K,
+      ph,
+      rainfall: weatherData.rainfall,
+      temperature: weatherData.main.temp,
+      humidity: weatherData.main.humidity,
+      rawText
+    });
+  } catch (error) {
+    console.error("Error extracting soil report:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to extract soil report values.",
+      details: error.message
     });
   }
 };
