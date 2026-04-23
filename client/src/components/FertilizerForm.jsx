@@ -56,15 +56,18 @@ const FertilizerForm = () => {
 
       {/* Header */}
       <div className="card-header">
-        <h2>Fertilizer Recommendation</h2>
-        <p>Analyze soil nutrients and get optimal fertilizer guidance.</p>
+        <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-400/10 border border-emerald-400/20 rounded-full text-emerald-400 text-xs font-bold mb-4">
+          <Sprout size={14} /> NUTRIENT OPTIMIZER
+        </div>
+        <h2>Fertilizer Guidance</h2>
+        <p className="text-emerald-100/60">Analyze soil nutrients and get optimal fertilizer guidance for your crops.</p>
       </div>
 
       {/* FORM */}
       <form onSubmit={handleSubmit}>
 
         {error && (
-          <div className="bg-red-50 border border-red-500 p-4 text-red-500 mb-6 rounded-lg flex items-center gap-2">
+          <div className="error-message">
             <AlertCircle size={16} />
             {error}
           </div>
@@ -73,14 +76,14 @@ const FertilizerForm = () => {
         {/* Crop */}
         <div className="form-group">
           <label>Crop Name</label>
-          <div className="relative">
-            <Sprout size={18} className="absolute top-3 left-3 text-gray-400" />
+          <div className="input-icon-wrapper">
+            <Sprout size={18} className="input-icon" />
             <input
               type="text"
               name="crop"
               value={formData.crop}
               onChange={handleChange}
-              className="form-control pl-10 w-full"
+              className="form-control"
               placeholder="e.g. wheat, rice, cotton"
               required
               disabled={loading}
@@ -139,7 +142,7 @@ const FertilizerForm = () => {
           </div>
         </div>
 
-        <p className="text-gray-500 text-sm mb-4">All values are in ppm.</p>
+        <p className="text-emerald-100/40 text-xs mt-2 uppercase tracking-wider">Note: All values should be entered in ppm (parts per million).</p>
 
         <button
           type="submit"
@@ -162,34 +165,42 @@ const FertilizerForm = () => {
 
       {/* RESULT */}
       {recommendation && (
-        <div className="result-card mt-6">
-          <h3>Fertilizer Recommendation</h3>
+        <div className="prediction-result-premium animate-fade-in mt-12 rounded-3xl p-8 relative overflow-hidden text-left">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-2xl"></div>
+          
+          <div className="relative z-10">
+            <div className="flex justify-between items-center mb-6">
+              <div className="premium-badge">Optimized Guidance</div>
+              <div className="text-emerald-200 text-xs font-bold uppercase">Ready to Implement</div>
+            </div>
+            
+            <div className="space-y-4 mb-8">
+              {formattedText.map((item, index) => (
+                <div key={index} className="flex gap-4 p-4 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 transition-colors">
+                  <div className="w-8 h-8 rounded-full bg-emerald-400 text-emerald-950 flex items-center justify-center font-bold flex-shrink-0">
+                    {index + 1}
+                  </div>
+                  <p className="text-emerald-50 leading-relaxed pt-1">
+                    {item.trim()}
+                  </p>
+                </div>
+              ))}
+            </div>
 
-          <div className="text-sm text-gray-600 leading-relaxed space-y-2">
-            {formattedText.map((item, index) => (
-              <p key={index}>
-                <strong>{index + 1}. </strong>
-                {item.trim()}
-              </p>
-            ))}
-          </div>
-
-          <div className="flex gap-3 mt-4">
-            <button
-              onClick={handleReset}
-              className="btn btn-primary w-full py-3 flex items-center justify-center gap-2"
-            >
-              <RotateCcw size={16} />
-              Try another
-            </button>
-
-            <button
-              onClick={() => window.print()}
-              className="btn w-full py-3 border border-gray-300 flex items-center justify-center gap-2"
-            >
-              <Printer size={16} />
-              Print
-            </button>
+            <div className="flex flex-col sm:flex-row gap-4 mt-8">
+              <button
+                onClick={handleReset}
+                className="btn bg-white/10 hover:bg-white/20 text-white border border-white/20 flex-1 py-3"
+              >
+                <RotateCcw size={18} /> New Analysis
+              </button>
+              <button
+                onClick={() => window.print()}
+                className="btn bg-emerald-400 hover:bg-white text-emerald-950 flex-1 py-3"
+              >
+                <Printer size={18} /> Export PDF
+              </button>
+            </div>
           </div>
         </div>
       )}
