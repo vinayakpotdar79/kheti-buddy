@@ -55,3 +55,16 @@ export const getFertilizerRecommendation = async (data) => {
     throw new Error('Network error or server is down');
   }
 };
+
+// Extract soil report values
+export const extractSoilReport = async (data) => {
+  try {
+    const response = await api.post('/crops/soil-report', data);
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw new Error(error.response.data.message || 'Error extracting soil report');
+    }
+    throw new Error('Network error or soil analysis service is down');
+  }
+};
