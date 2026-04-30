@@ -4,6 +4,7 @@ import express from "express";
 import cors from "cors";
 import cropRoutes from "./src/routes/cropRoutes.js";
 import fertilizerRoutes from "./src/routes/fertilizerRoutes.js";
+import chatRoutes from "./src/routes/chatRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -15,6 +16,7 @@ app.use(express.json({ limit: '10mb' })); // Parse JSON bodies with increased li
 // Routes
 app.use("/api/crops", cropRoutes);
 app.use("/api/fertilizer", fertilizerRoutes); 
+app.use("/api/chat", chatRoutes);
 
 // Start server
 app.listen(PORT, () => {

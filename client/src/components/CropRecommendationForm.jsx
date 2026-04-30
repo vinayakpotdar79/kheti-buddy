@@ -9,6 +9,7 @@ const CropRecommendationForm = () => {
   });
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
+  const [reasoning, setReasoning] = useState(null);
   const [error, setError] = useState(null);
   const [weather, setWeather] = useState(null);
   const [weatherLoading, setWeatherLoading] = useState(false);
@@ -57,6 +58,7 @@ const CropRecommendationForm = () => {
     setLoading(true);
     setError(null);
     setResult(null);
+    setReasoning(null);
 
     // Validate and Convert fields
     if (!formData.state || !formData.city) {
@@ -103,6 +105,7 @@ const CropRecommendationForm = () => {
       const response = await predictCrop({ ...numericData, city: formData.city });
       if (response && response.success) {
         setResult(response.recommended_crop);
+        setReasoning(response.reasoning);
       } else {
         setError(response?.message || 'Received an unexpected response from the server.');
       }
@@ -281,27 +284,41 @@ const CropRecommendationForm = () => {
       </form>
 
       {result && (
-        <div className="prediction-result-premium animate-fade-in mt-12 rounded-3xl p-8 relative overflow-hidden">
-          {/* Decorative background elements */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
+        <>
+          <div className="prediction-result-premium animate-fade-in mt-12 rounded-3xl p-8 relative overflow-hidden">
+            {/* Decorative background elements */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
 
-          <div className="flex flex-col items-center text-center relative z-10">
-            <div className="premium-badge mb-6">Prediction Success</div>
-            <div className="prediction-icon-wrapper mb-6 scale-110">
-              <Sprout size={56} className="prediction-icon" />
-            </div>
-            <div className="prediction-text">
-              <span className="prediction-label text-emerald-200">Recommended for your land</span>
-              <h2 className="prediction-value text-white text-5xl md:text-6xl">{result}</h2>
-            </div>
-            <div className="prediction-footer mt-8 pt-6 border-t border-white/20 w-full max-w-md">
-              <p className="text-emerald-50 opacity-90">
-                This crop is perfectly suited for your soil's NPK levels ({formData.N}, {formData.P}, {formData.K})
-                and the current weather in {formData.city}.
-              </p>
+            <div className="flex flex-col items-center text-center relative z-10">
+              <div className="premium-badge mb-6">Prediction Success</div>
+              <div className="prediction-icon-wrapper mb-6 scale-110">
+                <Sprout size={56} className="prediction-icon" />
+              </div>
+              <div className="prediction-text">
+                <span className="prediction-label text-emerald-200">Recommended for your land</span>
+                <h2 className="prediction-value text-white text-5xl md:text-6xl">{result}</h2>
+              </div>
+              <div className="prediction-footer mt-8 pt-6 border-t border-white/20 w-full max-w-md">
+                <p className="text-emerald-50 opacity-90">
+                  This crop is perfectly suited for your soil's NPK levels ({formData.N}, {formData.P}, {formData.K})
+                  and the current weather in {formData.city}.
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+
+          {reasoning && (
+            <div className="reasoning-panel animate-fade-in">
+              <div className="reasoning-header">
+                <div className="reasoning-badge">AI Insights</div>
+                <h3 className="reasoning-title">Why this crop?</h3>
+              </div>
+              <div className="reasoning-content">
+                {reasoning}
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

@@ -9,6 +9,7 @@ const PricePredictionForm = () => {
   });
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
+  const [reasoning, setReasoning] = useState(null);
   const [error, setError] = useState(null);
 
   const handleChange = (e) => {
@@ -25,6 +26,7 @@ const PricePredictionForm = () => {
     setLoading(true);
     setError(null);
     setResult(null);
+    setReasoning(null);
 
     const yearStr = formData.year ? formData.year.toString().trim() : '';
     const stateStr = formData.state ? formData.state.trim() : '';
@@ -61,6 +63,7 @@ const PricePredictionForm = () => {
 
       if (response && response.success) {
         setResult(response.predicted_price);
+        setReasoning(response.reasoning);
       } else {
         setError(response?.message || 'Received an unexpected response from the server.');
       }
@@ -145,25 +148,39 @@ const PricePredictionForm = () => {
       </form>
 
       {result && (
-        <div className="prediction-result-premium animate-fade-in mt-12 rounded-3xl p-8 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
-          
-          <div className="flex flex-col items-center text-center relative z-10">
-            <div className="premium-badge mb-6">Market Analysis Ready</div>
-            <div className="prediction-icon-wrapper mb-6 scale-110">
-              <IndianRupee size={56} className="prediction-icon" />
-            </div>
-            <div className="prediction-text">
-              <span className="prediction-label text-emerald-200">Expected Market Price</span>
-              <h2 className="prediction-value text-white text-5xl md:text-6xl">₹{parseFloat(result).toFixed(2)}</h2>
-            </div>
-            <div className="prediction-footer mt-8 pt-6 border-t border-white/20 w-full max-w-md">
-              <p className="text-emerald-50 opacity-90">
-                Estimated market value per quintal for <strong>{formData.crop}</strong> in {formData.district}, {formData.state} for the year {formData.year}.
-              </p>
+        <>
+          <div className="prediction-result-premium animate-fade-in mt-12 rounded-3xl p-8 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
+            
+            <div className="flex flex-col items-center text-center relative z-10">
+              <div className="premium-badge mb-6">Market Analysis Ready</div>
+              <div className="prediction-icon-wrapper mb-6 scale-110">
+                <IndianRupee size={56} className="prediction-icon" />
+              </div>
+              <div className="prediction-text">
+                <span className="prediction-label text-emerald-200">Expected Market Price</span>
+                <h2 className="prediction-value text-white text-5xl md:text-6xl">₹{parseFloat(result).toFixed(2)}</h2>
+              </div>
+              <div className="prediction-footer mt-8 pt-6 border-t border-white/20 w-full max-w-md">
+                <p className="text-emerald-50 opacity-90">
+                  Estimated market value per quintal for <strong>{formData.crop}</strong> in {formData.district}, {formData.state} for the year {formData.year}.
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+
+          {reasoning && (
+            <div className="reasoning-panel animate-fade-in">
+              <div className="reasoning-header">
+                <div className="reasoning-badge">AI Insights</div>
+                <h3 className="reasoning-title">Why this price?</h3>
+              </div>
+              <div className="reasoning-content">
+                {reasoning}
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

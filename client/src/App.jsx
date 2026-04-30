@@ -5,6 +5,7 @@ import CropRecommendationForm from './components/CropRecommendationForm';
 import PricePredictionForm from './components/PricePredictionForm';
 import SoilReportExtractor from './components/SoilReportExtractor';
 import FertilizerForm from './components/FertilizerForm';
+import ChatBot from './components/ChatBot';
 
 function App() {
   return (
@@ -59,6 +60,7 @@ function App() {
           />
         </Routes>
       </div>
+      <ChatBot />
     </div>
   );
 }

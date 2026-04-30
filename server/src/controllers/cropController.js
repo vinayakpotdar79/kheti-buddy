@@ -1,6 +1,7 @@
 import axios from "axios";
 import { getWeather } from "../utils/getWeather.js";
 import { analyzeSoilReportImage } from "../utils/getDocumentData.js";
+import { getGroqReasoning } from "../utils/getGroqReasoning.js";
 const FASTAPI_URL = process.env.FASTAPI_URL || "http://127.0.0.1:8000";
 
 export const getRecommendation = async (req, res) => {
@@ -40,12 +41,21 @@ export const getRecommendation = async (req, res) => {
       rainfall
     });
     console.log(response.data);
+
+    // Get AI Reasoning (non-blocking)
+    const reasoning = await getGroqReasoning("crop", {
+      N, P, K, ph, 
+      temperature, humidity, rainfall,
+      recommended_crop: response.data.crop
+    });
+
     return res.status(200).json({
       success: true,
       recommended_crop: response.data.crop,
       rainfall,
       temperature,
-      humidity
+      humidity,
+      reasoning
     });
 
   } catch (error) {
@@ -135,9 +145,16 @@ export const getPricePrediction = async (req, res) => {
       crop
     });
 
+    // Get AI Reasoning (non-blocking)
+    const reasoning = await getGroqReasoning("price", {
+      state, district, year, crop,
+      predicted_price: response.data.price
+    });
+
     return res.status(200).json({
       success: true,
-      predicted_price: response.data.price
+      predicted_price: response.data.price,
+      reasoning
     });
 
   } catch (error) {

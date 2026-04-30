@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Sprout, ScanLine, TrendingUp, FlaskConical, ArrowRight, CheckCircle2, Thermometer, Droplets, MessageCircle } from 'lucide-react';
 import farmImg from '../assets/farm.png';
 import boyfImg from '../assets/boyf.png';
+import VariableProximity from './VariableProximity';
 
 const features = [
   {
@@ -59,6 +60,8 @@ const whyPoints = [
 ];
 
 const LandingPage = () => {
+  const containerRef = useRef(null);
+
   useEffect(() => {
     const observerOptions = {
       threshold: 0.1,
@@ -83,7 +86,7 @@ const LandingPage = () => {
     <div className="landing-page">
 
       {/* ─── HERO ─────────────────────────────────────────────── */}
-      <section className="hero-section">
+      <section className="hero-section" ref={containerRef}>
         {/* Ambient glow blobs */}
         <div className="hero-blob hero-blob-left" />
         <div className="hero-blob hero-blob-right" />
@@ -101,9 +104,33 @@ const LandingPage = () => {
             </div>
 
             {/* Heading */}
-            <h1 className="hero-heading">
-              Smart <span className="hero-highlight">Agriculture</span>
-              <br />Decision Platform
+            <h1 className="hero-heading" style={{ position: 'relative' }}>
+              <VariableProximity
+                label={'Smart'}
+                fromFontVariationSettings="'wght' 800, 'opsz' 9"
+                toFontVariationSettings="'wght' 1000, 'opsz' 40"
+                containerRef={containerRef}
+                radius={200}
+                falloff="linear"
+              />{' '}
+              <VariableProximity
+                label={'Agriculture'}
+                fromFontVariationSettings="'wght' 800, 'opsz' 9"
+                toFontVariationSettings="'wght' 1000, 'opsz' 40"
+                containerRef={containerRef}
+                radius={200}
+                falloff="linear"
+                className="hero-highlight"
+              />
+              <br />
+              <VariableProximity
+                label={'Decision Platform'}
+                fromFontVariationSettings="'wght' 800, 'opsz' 9"
+                toFontVariationSettings="'wght' 1000, 'opsz' 40"
+                containerRef={containerRef}
+                radius={200}
+                falloff="linear"
+              />
             </h1>
 
             <p className="hero-subtext">

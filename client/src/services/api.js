@@ -68,3 +68,16 @@ export const extractSoilReport = async (data) => {
     throw new Error('Network error or soil analysis service is down');
   }
 };
+
+// Send chat message
+export const sendChatMessage = async (messages) => {
+  try {
+    const response = await api.post('/chat', { messages });
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw new Error(error.response.data.message || 'Error communicating with AI');
+    }
+    throw new Error('Network error or AI service is down');
+  }
+};
